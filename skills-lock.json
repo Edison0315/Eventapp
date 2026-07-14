@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "spec": {
+      "source": "Klerith/fernando-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/spec/SKILL.md",
+      "computedHash": "8a0420eb0458ff288368bad5ffadf1e7029be9fdcbcf6abed1b0431061c09ba6"
+    },
+    "spec-impl": {
+      "source": "Klerith/fernando-skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/spec-impl/SKILL.md",
+      "computedHash": "ebe3edf3e5d39fc5ff4bc8e70fda783f841ed3c6ffcd436c3a520faa393db17d"
+    },
+    "fuse-angular": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/fuse-angular/SKILL.md",
+      "computedHash": "044649cd7a8baff0e5fe0d10a60b4282045b9451cd7a17487c24ce000e85603e"
+    }
+  }
+}
