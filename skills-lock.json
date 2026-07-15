@@ -18,6 +18,12 @@
       "sourceType": "local",
       "skillPath": ".agents/skills/fuse-angular/SKILL.md",
       "computedHash": "044649cd7a8baff0e5fe0d10a60b4282045b9451cd7a17487c24ce000e85603e"
+    },
+    "nestjs-backend-conventions": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": ".agents/skills/nestjs-backend-conventions/SKILL.md",
+      "computedHash": "677cf8ad1a0ee248e1b3413116c9d9804b7224215af49aa113ff6421eb9becf5"
     }
   }
 }
