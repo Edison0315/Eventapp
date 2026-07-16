@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EntityType {
+  client
+  place
+  event
+}
+
+enum Status {
+  activo
+  inactivo
+}
+
+model Entity {
+  id   Int        @id @default(autoincrement())
+  type EntityType
+
+  client Client?
+
+  @@map("entities")
+}
+
+model Client {
+  id        Int       @id
+  name      String    @db.VarChar(120)
+  nro_doc   String    @unique @db.VarChar(40)
+  address   String    @db.VarChar(200)
+  ubication String    @db.VarChar(200)
+  email     String    @unique @db.VarChar(160)
+  web       String?   @db.VarChar(200)
+  status    Status    @default(activo)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  entity Entity @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@index([status, deletedAt])
+  @@map("clients")
+}
