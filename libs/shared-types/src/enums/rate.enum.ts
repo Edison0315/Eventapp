@@ -1,0 +1,1 @@
+export type RateType = 'Jr' | 'Basic' | 'Medium' | 'Sr';
