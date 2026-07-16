@@ -3,8 +3,8 @@ import { Entity } from "./entity.type";
 
 export interface Event extends Entity {
   name: string;
-  address: string;
-  ubication: string;
+  client_id: Entity['id'];
+  place_id: Entity['id'] | null;
   date_start: Date;
   date_end: Date;
   typeEvent: string;
