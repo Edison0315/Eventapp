@@ -3,11 +3,12 @@ import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from '../common/filters/all-exceptions/all-exceptions.filter';
 import { PrismaModule } from '../common/prisma/prisma.module';
 import { ClientsModule } from '../modules/clients/clients.module';
+import { PlacesModule } from '../modules/places/places.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [PrismaModule, ClientsModule],
+  imports: [PrismaModule, ClientsModule, PlacesModule],
   controllers: [AppController],
   providers: [
     AppService,

@@ -23,6 +23,7 @@ model Entity {
   type EntityType
 
   client Client?
+  place  Place?
 
   @@map("entities")
 }
@@ -44,4 +45,22 @@ model Client {
 
   @@index([status, deletedAt])
   @@map("clients")
+}
+
+model Place {
+  id        Int       @id
+  name      String    @unique @db.VarChar(120)
+  address   String    @db.VarChar(200)
+  ubication String    @db.VarChar(300)
+  email     String    @db.VarChar(160)
+  phone     String    @db.VarChar(20)
+  status    Status    @default(activo)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  entity Entity @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@index([status, deletedAt])
+  @@map("places")
 }
