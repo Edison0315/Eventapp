@@ -1,6 +1,6 @@
 # SPEC 01 — Client management (frontend CRUD)
 
-> **Status:** Draft
+> **Status:** Approved
 > **Depends on:** Backend SPEC 01 — Client management (endpoints `/clients` live).
 > **Date:** 2026-07-17
 > **Objective:** Deliver frontend CRUD for `Client` under `admin/clients` consuming `/clients` with a filterable list, reactive form inside a side drawer and delete confirmation, using Fuse Angular signals-first.
