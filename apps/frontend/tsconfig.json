@@ -14,7 +14,10 @@
         "target": "ES2022",
         "module": "ES2022",
         "useDefineForClassFields": false,
-        "lib": ["ES2022", "dom"]
+        "lib": ["ES2022", "dom"],
+        "paths": {
+            "@miapp/shared-types": ["../../../libs/shared-types/src/index.ts"]
+        }
     },
     "angularCompilerOptions": {
         "enableI18nLegacyMessageIdFormat": false

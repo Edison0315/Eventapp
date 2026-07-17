@@ -11,6 +11,8 @@ import { PrismaService } from './common/prisma/prisma.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
+
+  app.enableCors();
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(
     new ValidationPipe({

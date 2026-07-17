@@ -1,0 +1,92 @@
+<div class="flex min-w-0 flex-auto flex-col">
+    <!-- Header -->
+    <div class="flex flex-0 flex-col border-b p-6 sm:p-10">
+        <h2 class="text-xl font-semibold tracking-tight sm:text-2xl">
+            {{ mode() === 'edit' ? 'Edit client' : 'Create client' }}
+        </h2>
+    </div>
+
+    <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        class="flex flex-auto flex-col gap-2 overflow-y-auto p-6 sm:p-10"
+    >
+        <mat-form-field class="w-full">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" />
+            @if (form.controls.name.hasError('required')) {
+                <mat-error>Name is required</mat-error>
+            } @else if (form.controls.name.hasError('minlength')) {
+                <mat-error>Name must be at least 2 characters</mat-error>
+            } @else if (form.controls.name.hasError('maxlength')) {
+                <mat-error>Name must be at most 120 characters</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Doc. number</mat-label>
+            <input matInput formControlName="nro_doc" />
+            @if (form.controls.nro_doc.hasError('required')) {
+                <mat-error>Doc. number is required</mat-error>
+            } @else if (form.controls.nro_doc.hasError('maxlength')) {
+                <mat-error>Doc. number must be at most 40 characters</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="address" />
+            @if (form.controls.address.hasError('required')) {
+                <mat-error>Address is required</mat-error>
+            } @else if (form.controls.address.hasError('maxlength')) {
+                <mat-error>Address must be at most 200 characters</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Location</mat-label>
+            <input matInput formControlName="ubication" />
+            @if (form.controls.ubication.hasError('required')) {
+                <mat-error>Location is required</mat-error>
+            } @else if (form.controls.ubication.hasError('maxlength')) {
+                <mat-error>Location must be at most 200 characters</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+            @if (form.controls.email.hasError('required')) {
+                <mat-error>Email is required</mat-error>
+            } @else if (form.controls.email.hasError('email')) {
+                <mat-error>Enter a valid email</mat-error>
+            } @else if (form.controls.email.hasError('maxlength')) {
+                <mat-error>Email must be at most 160 characters</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+            <mat-label>Website</mat-label>
+            <input matInput formControlName="web" placeholder="https://example.com" />
+            @if (form.controls.web.hasError('pattern')) {
+                <mat-error>Website must start with http:// or https://</mat-error>
+            } @else if (form.controls.web.hasError('maxlength')) {
+                <mat-error>Website must be at most 200 characters</mat-error>
+            }
+        </mat-form-field>
+
+        <div class="mt-4 flex items-center justify-end gap-2">
+            <button type="button" mat-stroked-button (click)="cancel()">
+                Cancel
+            </button>
+            <button
+                type="submit"
+                mat-flat-button
+                color="primary"
+                [disabled]="form.invalid || store.saving()"
+            >
+                Save
+            </button>
+        </div>
+    </form>
+</div>
