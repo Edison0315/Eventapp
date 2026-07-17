@@ -24,6 +24,7 @@ model Entity {
 
   client Client?
   place  Place?
+  event  Event?
 
   @@map("entities")
 }
@@ -41,7 +42,8 @@ model Client {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  entity Entity @relation(fields: [id], references: [id], onDelete: Cascade)
+  entity Entity  @relation(fields: [id], references: [id], onDelete: Cascade)
+  events Event[]
 
   @@index([status, deletedAt])
   @@map("clients")
@@ -59,8 +61,33 @@ model Place {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  entity Entity @relation(fields: [id], references: [id], onDelete: Cascade)
+  entity Entity  @relation(fields: [id], references: [id], onDelete: Cascade)
+  events Event[]
 
   @@index([status, deletedAt])
   @@map("places")
+}
+
+model Event {
+  id        Int       @id
+  name      String    @db.VarChar(150)
+  clientId  Int       @map("client_id")
+  placeId   Int?      @map("place_id")
+  dateStart DateTime  @map("date_start")
+  dateEnd   DateTime  @map("date_end")
+  typeEvent String    @map("type_event") @db.VarChar(150)
+  status    Status    @default(activo)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  entity Entity @relation(fields: [id], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  place  Place? @relation(fields: [placeId], references: [id], onDelete: Restrict)
+
+  @@index([status, deletedAt])
+  @@index([clientId])
+  @@index([placeId])
+  @@index([dateStart, dateEnd])
+  @@map("events")
 }

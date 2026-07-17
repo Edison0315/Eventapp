@@ -1,0 +1,410 @@
+{
+  "info": {
+    "_postman_id": "14153dd9-6b82-47c2-8a51-b27fd3c6699b",
+    "name": "1EventApp",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42949426"
+  },
+  "item": [
+    {
+      "name": "clients",
+      "item": [
+        {
+          "name": "Get - All active clients",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fullName\": \"Carlos Martinez\",\n    \"email\": \"carlos.martinez@example.com\",\n    \"phoneNumber\": \"+34612345678\",\n    \"dateOfBirth\": \"1995-03-22\",\n    \"document\": \"48392015A\",\n    \"hireDate\": \"2024-01-15\",\n    \"skills\": [\n      \"waiter\",\n      \"room_coordinator\"\n    ],\n    \"languages\": [\n      \"spanish\",\n      \"english\",\n      \"catalan\"\n    ],\n    \"status\": \"active\",\n    \"hourlyRate\": 12.25\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{LOCAL}}/clients",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get - Client By id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/clients/4",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "clients",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post - Clients",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Panaderia PegaleAlGanso\",\n    \"nro_doc\": \"12343536\",\n    \"address\": \"Br colombia\",\n    \"ubication\": \"Barrio colombia, Manizales\",\n    \"email\": \"contacto@pegaso.com.co\",\n    \"web\": \"https://www.pegaso.co\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{LOCAL}}/clients",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Patch - Client by id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Panaderia PegaleAlGanso 2\",\n    \"nro_doc\": \"896848484\",\n    \"address\": \"Br kolom\",\n    \"ubication\": \"Barrio Velez, Manizales\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{LOCAL}}/clients/6",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "clients",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete - By id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/clients/6",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "clients",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "places",
+      "item": [
+        {
+          "name": "Get - All active places",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/places",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "places"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get - Place by id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/places/12",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "places",
+                "12"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post - Place",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Sala de prueba\",\n    \"address\": \"Carrer Aragon 18, 08015 Barcelona\",\n    \"ubication\": \"https://maps.google.com/?q=Aragon\",\n    \"email\": \"info@aragon.com\",\n    \"phone\": \"+34 934 414 001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{LOCAL}}/places",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "places"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete - By id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/places/12",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "places",
+                "12"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Patch - Place by id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Sala de prueba 2\",\n    \"address\": \"Carrer Aragon 18, 08015 Barcelona\",\n    \"ubication\": \"https://maps.google.com/?q=Aragon+prueba\",\n    \"email\": \"info@aragon.com\",\n    \"phone\": \"+34 934 414 001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{LOCAL}}/places/7",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "places",
+                "7"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "item": [
+        {
+          "name": "Get - All events (query params)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/events?from=2026-08-01&to=2026-09-20",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2026-08-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-09-20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get - Event by id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/events/14",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "events",
+                "14"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post - Event",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Boda Fernandez-Lopez 2\",\n    \"clientId\": 3,\n    \"placeId\": 13,\n    \"dateStart\": \"2026-08-02T18:00:00.000Z\",\n    \"dateEnd\": \"2026-08-02T23:59:00.000Z\",\n    \"typeEvent\": \"boda\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{LOCAL}}/events",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "events"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Patch - Event by id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Boda Fernandez-Lopez\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{LOCAL}}/events/20",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "events",
+                "20"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete - By id",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{LOCAL}}/events/20",
+              "host": [
+                "{{LOCAL}}"
+              ],
+              "path": [
+                "events",
+                "20"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

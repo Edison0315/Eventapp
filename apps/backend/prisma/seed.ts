@@ -153,6 +153,109 @@ async function upsertPlace(seedPlace: SeedPlace) {
   });
 }
 
+interface SeedEvent {
+  name: string;
+  clientEmail: string;
+  placeName: string;
+  dateStart: Date;
+  dateEnd: Date;
+  typeEvent: string;
+}
+
+// Dates are staggered per place so that no two events on the same place
+// overlap (half-open range [dateStart, dateEnd)). All dates fall within
+// 2026-08-01 .. 2026-12-31, ahead of the seed run date (2026-07-17).
+const events: SeedEvent[] = [
+  {
+    name: 'Boda Fernandez-Lopez',
+    clientEmail: 'info@fernandezasociados.com.ar',
+    placeName: 'Sala Apolo',
+    dateStart: new Date('2026-08-01T18:00:00Z'),
+    dateEnd: new Date('2026-08-01T23:59:00Z'),
+    typeEvent: 'boda',
+  },
+  {
+    name: 'Presentacion corporativa Panaderia El Amanecer',
+    clientEmail: 'contacto@elamanecer.com.ar',
+    placeName: 'La Riviera',
+    dateStart: new Date('2026-09-05T10:00:00Z'),
+    dateEnd: new Date('2026-09-05T14:00:00Z'),
+    typeEvent: 'corporativo',
+  },
+  {
+    name: 'Concierto benefico Distribuidora Norte',
+    clientEmail: 'ventas@distribuidoranorte.com.ar',
+    // Same place as the "Boda Fernandez-Lopez" event above, but on a
+    // different day, so the two never overlap.
+    placeName: 'Sala Apolo',
+    dateStart: new Date('2026-08-15T20:00:00Z'),
+    dateEnd: new Date('2026-08-16T02:00:00Z'),
+    typeEvent: 'concierto',
+  },
+  {
+    name: 'Conferencia legal Fernandez y Asociados',
+    clientEmail: 'info@fernandezasociados.com.ar',
+    placeName: 'Razzmatazz',
+    dateStart: new Date('2026-10-10T09:00:00Z'),
+    dateEnd: new Date('2026-10-10T18:00:00Z'),
+    typeEvent: 'conferencia',
+  },
+  {
+    name: 'Cumpleanos 50 aniversario Panaderia El Amanecer',
+    clientEmail: 'contacto@elamanecer.com.ar',
+    placeName: 'Sala Custom',
+    dateStart: new Date('2026-11-20T19:00:00Z'),
+    dateEnd: new Date('2026-11-21T01:00:00Z'),
+    typeEvent: 'cumpleanos',
+  },
+];
+
+async function upsertEvent(seedEvent: SeedEvent) {
+  const existing = await prisma.event.findFirst({
+    where: { name: seedEvent.name, dateStart: seedEvent.dateStart },
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  const client = await prisma.client.findUnique({
+    where: { email: seedEvent.clientEmail.toLowerCase() },
+  });
+  if (!client) {
+    throw new Error(
+      `Seed event "${seedEvent.name}" references unknown client email: ${seedEvent.clientEmail}`,
+    );
+  }
+
+  const place = await prisma.place.findUnique({
+    where: { name: seedEvent.placeName },
+  });
+  if (!place) {
+    throw new Error(
+      `Seed event "${seedEvent.name}" references unknown place name: ${seedEvent.placeName}`,
+    );
+  }
+
+  // Entity + Event pair created atomically, one transaction per event,
+  // mirroring upsertClient/upsertPlace above.
+  return prisma.$transaction(async (tx) => {
+    const entity = await tx.entity.create({ data: { type: 'event' } });
+    return tx.event.create({
+      data: {
+        id: entity.id,
+        name: seedEvent.name,
+        clientId: client.id,
+        placeId: place.id,
+        dateStart: seedEvent.dateStart,
+        dateEnd: seedEvent.dateEnd,
+        typeEvent: seedEvent.typeEvent,
+        status: 'activo',
+      },
+    });
+  });
+}
+
 async function main() {
   if (process.env.NODE_ENV === 'production') {
     console.warn('Seed skipped: NODE_ENV=production');
@@ -167,6 +270,11 @@ async function main() {
   for (const seedPlace of places) {
     const result = await upsertPlace(seedPlace);
     console.log(`Seeded place: ${result.name} (id=${result.id})`);
+  }
+
+  for (const seedEvent of events) {
+    const result = await upsertEvent(seedEvent);
+    console.log(`Seeded event: ${result.name} (id=${result.id})`);
   }
 }
 

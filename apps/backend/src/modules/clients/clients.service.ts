@@ -1,12 +1,16 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Client, Prisma } from '@prisma/client';
 import { PrismaService } from '../../common/prisma/prisma.service';
+import { EventDomainService } from '../events/domain/event-domain.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 
 @Injectable()
 export class ClientsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventDomain: EventDomainService,
+  ) {}
 
   findAllActive(): Promise<Client[]> {
     return this.prisma.client.findMany({
@@ -73,7 +77,9 @@ export class ClientsService {
     }
   }
 
-  softDelete(client: Client): Promise<Client> {
+  async softDelete(client: Client): Promise<Client> {
+    await this.eventDomain.ensureClientCanBeDeleted(client.id);
+
     return this.prisma.client.update({
       where: { id: client.id },
       data: { deletedAt: new Date(), status: 'inactivo' },
