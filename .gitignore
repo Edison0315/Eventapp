@@ -46,3 +46,6 @@ Thumbs.db
 
 # Enviromnment Variables
 .env
+
+# .Pem files
+*.pem
