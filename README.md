@@ -149,6 +149,55 @@ El objetivo es demostrar dominio del ciclo completo de desarrollo moderno: desde
 
 ---
 
+## 🤖 Claude Code: Skills, Agentes y Spec-Driven Design
+
+Este proyecto se ha construido utilizando **Claude Code** como plataforma central de ingeniería asistida por IA, aplicando un flujo de trabajo profesional y reproducible que combina **Spec-Driven Design**, **agentes especializados** y **skills declarativas**. No se trata de generación de código ad-hoc: cada cambio significativo atraviesa un ciclo formal de especificación, aprobación e implementación gobernada.
+
+### 📐 Spec-Driven Design
+
+Toda funcionalidad relevante nace como una **especificación versionada** dentro de `apps/frontend/specs/` o `apps/backend/specs/` antes de escribirse una sola línea de código productivo. Cada spec documenta contrato, contexto, criterios de aceptación y decisiones de diseño, y se marca como `Approved` únicamente cuando el diseño resiste revisión.
+
+- **Trazabilidad total** entre requisito, diseño e implementación.
+- **Revisión previa a la codificación**, reduciendo retrabajo y desviaciones de arquitectura.
+- **Documentación viva** que evoluciona junto al repositorio y sirve como referencia canónica.
+- Separación explícita entre la fase de **diseño (`/spec`)** y la fase de **implementación (`spec-impl`)**.
+
+### 🧠 Agentes especializados
+
+El proyecto define **agentes con responsabilidades acotadas**, cada uno con su propio conjunto de herramientas y convenciones, orquestados desde Claude Code:
+
+| Agente | Responsabilidad |
+|--------|----------------|
+| **backend-implementer** | Implementa specs aprobadas siguiendo convenciones NestJS + TypeORM (módulos, DTOs, guards, migraciones). |
+| **frontend-implementer** | Implementa specs aprobadas sobre Fuse Angular (signals, standalone components, OnPush, nuevo control flow). |
+| **Explore** | Búsqueda read-only rápida sobre el código para localizar símbolos, definiciones y referencias. |
+| **Plan** | Diseño de estrategias de implementación y evaluación de trade-offs arquitectónicos. |
+| **general-purpose** | Investigaciones multi-paso y tareas transversales que no encajan en un agente específico. |
+
+Este esquema aplica el **principio de mínimo privilegio también a la IA**: cada agente accede solo a las herramientas que necesita, evitando efectos colaterales fuera de su dominio.
+
+### 🛠️ Skills declarativas
+
+Las convenciones del proyecto se codifican como **skills auto-activables**, garantizando consistencia entre sesiones y colaboradores:
+
+- **`fuse-angular`** — Angular 19+ signals-first, standalone components, OnPush, RxJS únicamente en los bordes, contratos Fuse (config, nav, mock-api, theming).
+- **`nestjs-backend-conventions`** — Patrones NestJS + TypeORM, elección entre repositorio directo y `QueryRunner`, contratos de respuesta HTTP y Definition of Done.
+- **`security-review`** — Revisión de seguridad sobre los cambios pendientes de la rama.
+- **`simplify`** — Detección y aplicación de refactors por reuso, simplificación y eficiencia.
+
+Las skills se resuelven automáticamente según el contexto (ruta, tipo de archivo, intención del prompt), lo que asegura que **cada modificación respete las convenciones del stack correspondiente** sin depender de la memoria del desarrollador.
+
+### 🎯 Qué aporta este enfoque
+
+- **Calidad reproducible**: mismas convenciones aplicadas en cada iteración, independientemente del volumen de cambios.
+- **Velocidad con control**: la IA acelera la ejecución sin romper la arquitectura, porque opera dentro de un marco formal.
+- **Onboarding inmediato**: cualquier nuevo colaborador (humano o agente) hereda el contexto completo del proyecto vía specs y skills.
+- **Auditoría clara**: las decisiones quedan documentadas en las specs y en los commits, no en conversaciones efímeras.
+
+> Dominar Claude Code no es "pedirle código a una IA". Es **diseñar un sistema de ingeniería** en el que la IA es un colaborador gobernado por specs, agentes y skills, con el mismo rigor que se aplica al código de producción.
+
+---
+
 ## 🎯 Qué demuestra este proyecto
 
 > Este repositorio no es solo un ejemplo técnico: es una **muestra de mi forma de trabajar**.
