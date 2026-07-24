@@ -1,96 +1,160 @@
-# Org
+<div align="center">
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+# 🚀 Full-Stack Monorepo Platform
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+### Angular · NestJS · Nx · AWS · GitHub Actions
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+*Una arquitectura empresarial end-to-end que demuestra prácticas modernas de desarrollo, DevOps e Infrastructure as Code.*
 
-## Run tasks
+![Nx](https://img.shields.io/badge/Nx-143055?style=for-the-badge&logo=nx&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
-To run tasks with Nx use:
+</div>
 
-```sh
-npx nx <target> <project-name>
+---
+
+## 📖 Sobre el proyecto
+
+Este repositorio es un **proof-of-concept de nivel productivo** que integra un frontend en Angular y un backend en NestJS bajo un **monorepo Nx**, empaquetado con Docker, publicado en **Amazon ECR** y desplegado automáticamente en AWS mediante un pipeline de **CI/CD con GitHub Actions**. Toda la infraestructura se gestiona como código, incluyendo la configuración de IAM y la gestión segura de secretos.
+
+El objetivo es demostrar dominio del ciclo completo de desarrollo moderno: desde la organización del código y la calidad hasta el despliegue automatizado en la nube con buenas prácticas de seguridad.
+
+---
+
+## 🏗️ Arquitectura
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                     GitHub Repository                        │
+│  ┌────────────────────────────────────────────────────────┐  │
+│  │              Nx Monorepo (TypeScript)                  │  │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐   │  │
+│  │  │  Angular App │  │  NestJS API  │  │ Shared Libs │   │  │
+│  │  └──────────────┘  └──────────────┘  └─────────────┘   │  │
+│  └────────────────────────────────────────────────────────┘  │
+└────────────────────────────┬─────────────────────────────────┘
+                             │  push / PR
+                             ▼
+┌──────────────────────────────────────────────────────────────┐
+│                    GitHub Actions CI/CD                      │
+│   Lint → Test → Build → Docker → Push ECR → Deploy AWS       │
+└────────────────────────────┬─────────────────────────────────┘
+                             │  OIDC / IAM Role
+                             ▼
+┌──────────────────────────────────────────────────────────────┐
+│                          AWS Cloud                           │
+│    ┌──────────┐   ┌──────────────┐   ┌──────────────────┐    │
+│    │   ECR    │──▶│  Compute     │──▶│ Secrets Manager  │    │
+│    │ Registry │   │  (Container) │   │                  │    │
+│    └──────────┘   └──────────────┘   └──────────────────┘    │
+│                        IAM · Roles · Policies                │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-For example:
+---
 
-```sh
-npx nx build myproject
+## 🧰 Stack tecnológico
+
+| Capa | Tecnología | Propósito |
+|------|-----------|-----------|
+| **Monorepo** | Nx | Gestión unificada, caching, dependency graph, generadores |
+| **Frontend** | Angular | SPA moderna, tipada y modular |
+| **Backend** | NestJS | API escalable con arquitectura modular basada en decoradores |
+| **Containerización** | Docker | Imágenes multi-stage optimizadas |
+| **Registry** | Amazon ECR | Almacenamiento privado de imágenes |
+| **Cloud** | AWS | Despliegue, ejecución y gestión de recursos |
+| **Secretos** | AWS Secrets Manager | Gestión segura de credenciales |
+| **Identidad** | AWS IAM | Roles, políticas y control de acceso |
+| **CI/CD** | GitHub Actions | Automatización de build, test y deploy |
+| **IaC** | GitHub Actions Workflows | Infraestructura y pipelines como código |
+
+---
+
+## ✨ Conocimientos demostrados
+
+### 🏛️ Arquitectura y organización de código
+- Diseño de un **monorepo Nx** con separación clara entre apps y librerías compartidas.
+- Aprovechamiento del **grafo de dependencias** de Nx para builds y tests incrementales.
+- Aplicación de principios **SOLID** y **modularidad** tanto en Angular como en NestJS.
+- Estrategia de **shared libraries** para reutilizar tipos, DTOs y lógica entre front y back.
+
+### 🎨 Frontend con Angular
+- Estructura por módulos, servicios y componentes reutilizables.
+- Consumo tipado de APIs mediante interfaces compartidas desde el backend.
+- Buenas prácticas de rendimiento y organización de estado.
+
+### ⚙️ Backend con NestJS
+- Arquitectura modular con **controllers**, **services** y **providers**.
+- Uso de **DTOs**, validación e inyección de dependencias.
+- Diseño de APIs REST limpias y mantenibles.
+
+### 🐳 Docker y empaquetado
+- **Dockerfiles multi-stage** para reducir el tamaño final de las imágenes.
+- Separación de entornos y configuración vía variables.
+- Optimización de layers y build cache.
+
+### ☁️ AWS y despliegue en la nube
+- **Amazon ECR** como registry privado de imágenes Docker.
+- Configuración de **IAM Roles** con el principio de **mínimo privilegio**.
+- **AWS Secrets Manager** para credenciales, tokens y configuración sensible.
+- Autenticación segura entre GitHub Actions y AWS mediante **OIDC** (sin claves de larga duración).
+
+### 🔄 CI/CD con GitHub Actions
+- Pipelines automatizados en cada `push` y `pull request`.
+- Etapas de **lint → test → build → dockerize → push a ECR → deploy**.
+- Uso de **matrices**, **caching** y **workflows reutilizables**.
+- Despliegue continuo con separación entre entornos.
+
+### 📜 Infrastructure as Code
+- Definición declarativa de pipelines y configuración de despliegue.
+- Versionado de la infraestructura junto al código de la aplicación.
+- Reproducibilidad total del entorno desde el repositorio.
+
+### 🔐 Seguridad
+- Cero credenciales hardcodeadas en el código o en los workflows.
+- Roles IAM específicos por servicio y por acción.
+- Secretos gestionados exclusivamente vía AWS Secrets Manager y GitHub Secrets.
+
+---
+
+## 📂 Estructura del monorepo
+
 ```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
+├── apps/
+│   ├── frontend/          # Aplicación Angular
+│   └── backend/           # API NestJS
+├── libs/
+│   └── shared/            # Tipos, DTOs y utilidades compartidas
+├── .github/
+│   └── workflows/         # Pipelines de CI/CD
+├── docker/                # Dockerfiles y configuración de contenedores
+├── nx.json                # Configuración del monorepo
+└── package.json
 ```
+---
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+## 🔄 Flujo de CI/CD
 
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
+1. **Push / PR** → dispara el workflow en GitHub Actions.
+2. **Lint & Test** → validación de calidad del código.
+3. **Build** → compilación incremental gracias a Nx.
+4. **Docker Build** → imágenes multi-stage para cada aplicación.
+5. **Push a ECR** → autenticación vía OIDC + IAM Role.
+6. **Deploy en AWS** → despliegue del contenedor con secretos inyectados desde Secrets Manager.
 
-# Generate a library
-npx nx g @nx/react:lib some-lib
-```
+---
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 🎯 Qué demuestra este proyecto
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+> Este repositorio no es solo un ejemplo técnico: es una **muestra de mi forma de trabajar**.
 
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Capacidad para diseñar **arquitecturas escalables end-to-end**.
+- Dominio del **ecosistema TypeScript** en frontend y backend.
+- Experiencia real con **AWS** y buenas prácticas de **seguridad en la nube**.
+- Mentalidad **DevOps**: automatización, reproducibilidad y observabilidad.
+- Enfoque **profesional**: código limpio, tipado, testeable y desplegable con un solo commit.
