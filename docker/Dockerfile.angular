@@ -1,0 +1,24 @@
+# Multi-stage build for Angular (Nx)
+# Build from monorepo root: docker build -f docker/Dockerfile.angular -t frontend .
+
+# ---------- Stage 1: build ----------
+FROM node:20-alpine AS build
+WORKDIR /workspace
+
+# Cache deps
+COPY package.json package-lock.json nx.json tsconfig.base.json ./
+COPY apps/frontend/package.json ./apps/frontend/
+COPY apps/frontend/project.json ./apps/frontend/
+COPY libs ./libs
+RUN npm ci --ignore-scripts
+
+# Build the Angular app
+ARG NX_BUILD_OPTIONS="--configuration=production"
+RUN npx nx build frontend ${NX_BUILD_OPTIONS} --skip-nx-cache
+
+# ---------- Stage 2: nginx ----------
+FROM nginx:1.27-alpine
+COPY nginx/angular.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /workspace/dist/apps/frontend/browser /usr/share/nginx/html
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost/ >/dev/null || exit 1

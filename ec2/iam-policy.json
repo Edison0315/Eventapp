@@ -1,0 +1,46 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "ECRPull",
+			"Effect": "Allow",
+			"Action": [
+				"ecr:GetAuthorizationToken",
+				"ecr:BatchCheckLayerAvailability",
+				"ecr:GetDownloadUrlForLayer",
+				"ecr:BatchGetImage"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "SSMAccess",
+			"Effect": "Allow",
+			"Action": [
+				"ssm:SendCommand",
+				"ssm:ListCommands",
+				"ssm:ListCommandInvocations",
+				"ssm:DescribeInstanceInformation"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "SSMParameterRead",
+			"Effect": "Allow",
+			"Action": [
+				"ssm:GetParameter",
+				"ssm:GetParameters",
+				"ssm:GetParametersByPath"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "S3ForSSMLogs",
+			"Effect": "Allow",
+			"Action": [
+				"s3:PutObject",
+				"s3:GetObject"
+			],
+			"Resource": "arn:aws:s3:::ssm-logs-general2/*"
+		}
+	]
+}

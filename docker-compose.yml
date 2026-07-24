@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  api:
+    image: ${ECR_REGISTRY}/api:${IMAGE_TAG:-latest}
+    container_name: api
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  frontend:
+    image: ${ECR_REGISTRY}/frontend:${IMAGE_TAG:-latest}
+    container_name: frontend
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge

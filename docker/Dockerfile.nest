@@ -1,0 +1,31 @@
+# Multi-stage build for Nest (Nx)
+# Build from monorepo root: docker build -f docker/Dockerfile.nest -t api .
+
+# ---------- Stage 1: deps + build ----------
+FROM node:20-alpine AS build
+WORKDIR /workspace
+
+COPY package.json package-lock.json nx.json tsconfig.base.json ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/api/project.json ./apps/api/
+COPY libs ./libs
+RUN npm ci --ignore-scripts
+
+RUN npx nx build api --configuration=production --skip-nx-cache
+
+# ---------- Stage 2: runtime ----------
+FROM node:20-alpine AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+
+# Only the built artifact + prod deps
+COPY --from=build /workspace/dist/apps/api ./
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+
+USER node
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget -qO- http://localhost:3000/api/health || exit 1
+
+CMD ["node", "main.js"]
