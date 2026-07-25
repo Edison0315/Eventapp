@@ -11,6 +11,9 @@ COPY libs ./libs
 COPY apps ./apps
 RUN npm ci --ignore-scripts
 
+# Generate Prisma client for backend
+RUN npx prisma generate --schema=./apps/backend/prisma/schema.prisma
+
 RUN npx nx build backend --configuration=production --skip-nx-cache
 
 # ---------- Stage 2: runtime ----------
