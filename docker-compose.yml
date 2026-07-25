@@ -1,6 +1,6 @@
 services:
   api:
-    image: ${ECR_REGISTRY}/api:${IMAGE_TAG:-latest}
+    image: ${ECR_REGISTRY}/api:latest
     container_name: api
     restart: unless-stopped
     env_file:
@@ -14,7 +14,7 @@ services:
       retries: 3
 
   frontend:
-    image: ${ECR_REGISTRY}/frontend:${IMAGE_TAG:-latest}
+    image: ${ECR_REGISTRY}/frontend:latest
     container_name: frontend
     restart: unless-stopped
     depends_on:

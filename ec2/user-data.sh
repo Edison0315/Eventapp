@@ -1,10 +1,15 @@
-```bash
+#!/bin/bash
 # Lo que hace:
 #   1. Instala Docker + AWS CLI + SSM Agent
 #   2. Clona el repo del proyecto en /opt/app
 #   3. Deja todo listo para recibir deploys via SSM
 
 set -euo pipefail
+
+# Log de todo lo que ocurre en el user-data (útil para depurar)
+exec > >(tee -a /var/log/user-data.log) 2>&1
+
+export DEBIAN_FRONTEND=noninteractive
 
 # ---------- Paquetes base ----------
 apt-get update -y
@@ -30,9 +35,13 @@ unzip -q /tmp/awscliv2.zip -d /tmp/
 rm -rf /tmp/aws /tmp/awscliv2.zip
 
 # ---------- SSM Agent ----------
-snap install amazon-ssm-agent --classic || true
-systemctl enable --now amazon-ssm-agent || true
+# En Ubuntu oficial de AWS ya viene preinstalado vía snap; solo aseguramos que esté activo.
+systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service || \
+  snap install amazon-ssm-agent --classic || true
 
+# ---------- Parámetros desde SSM ----------
+# Requiere IAM Instance Profile con permisos ssm:GetParameter (y kms:Decrypt si usas SecureString).
+ECR_REGISTRY=$(aws ssm get-parameter --name /app/ecr-registry --query Parameter.Value --output text --region eu-north-1 2>/dev/null || echo "")
 DATABASE_URL=$(aws ssm get-parameter --name /app/database-url --with-decryption --query Parameter.Value --output text --region eu-north-1 2>/dev/null || echo "")
 GITHUB_TOKEN=$(aws ssm get-parameter --name /app/github-token --with-decryption --query Parameter.Value --output text --region eu-north-1 2>/dev/null || echo "")
 GITHUB_REPO="Edison0315/Eventapp"
@@ -55,10 +64,10 @@ cat > /opt/app/.env <<EOF
 PORT=3000
 NODE_ENV=production
 DATABASE_URL=${DATABASE_URL}
+ECR_REGISTRY=${ECR_REGISTRY}
 EOF
 
 chown -R ubuntu:ubuntu /opt/app
 chmod 600 /opt/app/.env
 
 echo "Bootstrap completo. La instancia puede recibir comandos SSM."
-```
