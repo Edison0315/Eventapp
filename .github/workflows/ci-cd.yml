@@ -91,9 +91,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    environment:
-      name: production
-      url: http://${{ secrets.PUBLIC_HOST }}
     permissions:
       id-token: write
       contents: read
