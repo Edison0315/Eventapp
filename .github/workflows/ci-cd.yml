@@ -9,8 +9,6 @@ env:
   AWS_REGION: eu-north-1
   ECR_REPO_API: api
   ECR_REPO_FRONTEND: frontend
-  EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
-  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   # ---------------------------------------------------------------------------
@@ -75,6 +73,7 @@ jobs:
       - name: Build & push image
         env:
           ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build \
             -f ${{ matrix.dockerfile }} \
@@ -98,6 +97,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    env:
+      IMAGE_TAG: ${{ github.sha }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -108,7 +109,7 @@ jobs:
       - name: Send deploy command via SSM
         run: |
           aws ssm send-command \
-            --instance-ids "${{ env.EC2_INSTANCE_ID }}" \
+            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
             --parameters commands=[
               "set -euo pipefail",
