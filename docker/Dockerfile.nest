@@ -7,9 +7,8 @@ FROM node:20.18-alpine3.20 AS build
 WORKDIR /workspace
 
 COPY package.json package-lock.json nx.json tsconfig.base.json ./
-COPY apps/backend/package.json ./apps/backend/
-COPY apps/backend/project.json ./apps/backend/
 COPY libs ./libs
+COPY apps ./apps
 RUN npm ci --ignore-scripts
 
 RUN npx nx build backend --configuration=production --skip-nx-cache
