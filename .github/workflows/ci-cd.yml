@@ -18,7 +18,7 @@ jobs:
     name: Build & push (${{ matrix.target }})
     runs-on: ubuntu-latest
     permissions:
-      id-token: write   # para OIDC hacia AWS
+      id-token: write
       contents: read
     strategy:
       fail-fast: false
@@ -59,7 +59,12 @@ jobs:
           echo "::notice::${{ matrix.target }} no cambió en este push, saltando build."
           exit 0
 
-      # ---- AWS auth via OIDC (recomendado, sin access keys de larga vida) ----
+      - name: Skip if not affected
+        if: ${{ !contains(steps.affected.outputs.changed, matrix.target) && github.event_name == 'push' }}
+        run: |
+          echo "::notice::${{ matrix.target }} no cambió, saltando build."
+          exit 0
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -108,16 +113,7 @@ jobs:
           aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters commands=[
-              "set -euo pipefail",
-              "cd /opt/app",
-              "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
-              "export ECR_REGISTRY=${{ secrets.ECR_REGISTRY }}",
-              "export IMAGE_TAG=${{ env.IMAGE_TAG }}",
-              "docker compose pull",
-              "docker compose up -d --remove-orphans",
-              "docker image prune -f"
-            ] \
+            --parameters commands=["bash /opt/app/deploy.sh"] \
             --output-s3-bucket-name "${{ secrets.SSM_LOGS_BUCKET }}" \
             --comment "Deploy ${{ env.IMAGE_TAG }}"
 

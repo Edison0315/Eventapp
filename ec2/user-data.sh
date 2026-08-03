@@ -70,5 +70,6 @@ EOF
 
 chown -R ubuntu:ubuntu /opt/app
 chmod 600 /opt/app/.env
+chmod +x /opt/app/deploy.sh
 
 echo "Bootstrap completo. La instancia puede recibir comandos SSM."
