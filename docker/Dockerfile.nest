@@ -1,5 +1,5 @@
 # Multi-stage build for Nest (Nx)
-# Build from monorepo root: docker build -f docker/Dockerfile.nest -t backend .
+# Build from monorepo root: docker build -f docker/Dockerfile.nest -t backend . 
 
 # ---------- Stage 1: deps + build ----------
 # Pin to specific patch version. Replace tag with @sha256:<digest> for full immutability.
