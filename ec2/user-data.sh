@@ -11,7 +11,7 @@ exec > >(tee -a /var/log/user-data.log) 2>&1
 
 export DEBIAN_FRONTEND=noninteractive
 
-# ---------- Paquetes base ----------
+# ---------- Paquetes base -------------
 apt-get update -y
 apt-get install -y ca-certificates curl gnupg lsb-release unzip git
 
