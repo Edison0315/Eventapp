@@ -1,7 +1,7 @@
 # Multi-stage build for Angular (Nx)
 # Build from monorepo root: docker build -f docker/Dockerfile.angular -t frontend .
 
-# ---------- Stage 1: build ----------
+# ---------- Stage 1: build -------------
 # Pin to specific patch version. Replace tag with @sha256:<digest> for full immutability.
 FROM node:20.18-alpine3.20 AS build
 WORKDIR /workspace
