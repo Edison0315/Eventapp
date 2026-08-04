@@ -37,8 +37,9 @@ rm -rf /tmp/aws /tmp/awscliv2.zip
 
 # ---------- SSM Agent ----------
 # En Ubuntu oficial de AWS ya viene preinstalado vía snap; solo aseguramos que esté activo.
-systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service || \
-  snap install amazon-ssm-agent --classic || true
+snap install amazon-ssm-agent --classic || true
+
+snap start amazon-ssm-agent || true
 
 # ---------- Parámetros desde SSM ----------
 # Requiere IAM Instance Profile con permisos ssm:GetParameter (y kms:Decrypt si usas SecureString).
