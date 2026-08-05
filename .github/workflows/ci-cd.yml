@@ -108,6 +108,13 @@ jobs:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Check if instance is registered with SSM
+        run: |
+          aws ssm describe-instance-information \
+            --instance-compute-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --region eu-north-1 \
+            || echo "Instance not registered with SSM"
+
       - name: Send deploy command via SSM
         run: |
           aws ssm send-command \
