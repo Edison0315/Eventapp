@@ -115,7 +115,7 @@ jobs:
       - name: Check if instance is registered with SSM
         run: |
           aws ssm describe-instance-information \
-            --instance-compute-ids "${{ vars.EC2_INSTANCE_ID }}" \
+            --filters "Key=InstanceIds,Values="${{ vars.EC2_INSTANCE_ID }}" \ 
             --region eu-north-1 \
             || echo "Instance not registered with SSM"
 
