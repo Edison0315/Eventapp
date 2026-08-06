@@ -2,6 +2,28 @@
 	"Version": "2012-10-17",
 	"Statement": [
 		{
+			"Sid": "ECRPushPull",
+			"Effect": "Allow",
+			"Action": [
+				"ecr:GetAuthorizationToken"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "ECRRepoActions",
+			"Effect": "Allow",
+			"Action": [
+				"ecr:BatchCheckLayerAvailability",
+				"ecr:GetDownloadUrlForLayer",
+				"ecr:BatchGetImage",
+				"ecr:InitiateLayerUpload",
+				"ecr:UploadLayerPart",
+				"ecr:CompleteLayerUpload",
+				"ecr:PutImage"
+			],
+			"Resource": "*"
+		},
+		{
 			"Sid": "ECRPull",
 			"Effect": "Allow",
 			"Action": [
@@ -19,7 +41,8 @@
 				"ssm:SendCommand",
 				"ssm:ListCommands",
 				"ssm:ListCommandInvocations",
-				"ssm:DescribeInstanceInformation"
+				"ssm:DescribeInstanceInformation",
+				"ssm:UpdateInstanceInformation"
 			],
 			"Resource": "*"
 		},
