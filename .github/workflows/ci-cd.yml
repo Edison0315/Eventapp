@@ -115,8 +115,9 @@ jobs:
       - name: Check if instance is registered with SSM
         run: |
           aws ssm describe-instance-information \
-            --filters "Key=InstanceIds,Values="${{ vars.EC2_INSTANCE_ID }}" \ 
+            --filters "Key=InstanceIds,Values=${{ secrets.EC2_INSTANCE_ID }}" \
             --region eu-north-1 \
+            --output json \
             || echo "Instance not registered with SSM"
 
       - name: Send deploy command via SSM
