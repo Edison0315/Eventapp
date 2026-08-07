@@ -1,7 +1,7 @@
 services:
-  api:
-    image: ${ECR_REGISTRY}/api:latest
-    container_name: api
+  backend:
+    image: ${ECR_REGISTRY}/backend:latest
+    container_name: backend
     restart: unless-stopped
     env_file:
       - ./.env
