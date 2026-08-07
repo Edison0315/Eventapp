@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+source /opt/app/.env
+
 ECR_REGISTRY="${ECR_REGISTRY:-}"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 AWS_REGION="eu-north-1"
