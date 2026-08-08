@@ -3,6 +3,8 @@ services:
     image: ${ECR_REGISTRY}/backend:latest
     container_name: backend
     restart: unless-stopped
+    ports:
+      - "3000:3000"
     env_file:
       - ./.env
     networks:
