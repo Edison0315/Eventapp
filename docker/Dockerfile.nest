@@ -21,15 +21,16 @@ FROM node:20.18-alpine3.20 AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 
-# Copy built artifact (nx emits a package.json with only runtime deps for the backend)
-COPY --from=build /workspace/dist/apps/backend ./
-# Copy Prisma client generado en build
-COPY --from=build /workspace/node_modules/.prisma ./node_modules/.prisma
-COPY --from=build /workspace/node_modules/@prisma ./node_modules/@prisma
+# Copiar package.json para instalar solo runtime deps
+COPY --from=build /workspace/dist/apps/backend/package.json ./
+COPY --from=build /workspace/apps/backend/prisma ./prisma
 
 RUN npm install --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund \
+  && npx prisma generate \
   && npm cache clean --force \
   && rm -rf /root/.npm /tmp/*
+
+COPY --from=build /workspace/dist/apps/backend ./
 
 USER node
 EXPOSE 3000
