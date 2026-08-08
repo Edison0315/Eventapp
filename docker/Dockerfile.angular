@@ -21,7 +21,7 @@ RUN npx nx build frontend ${NX_BUILD_OPTIONS} --skip-nx-cache
 FROM nginxinc/nginx-unprivileged:1.27.3-alpine
 USER root
 COPY nginx/angular.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /workspace/apps/frontend/dist/fuse /usr/share/nginx/html
+COPY --from=build /workspace/dist/apps/frontend/browser/. /usr/share/nginx/html/
 RUN chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /etc/nginx/conf.d
 USER nginx
 EXPOSE 8080
