@@ -21,16 +21,20 @@ FROM node:20.18-alpine3.20 AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 
-# Copiar package.json para instalar solo runtime deps
+# Instalar primero las deps runtime
 COPY --from=build /workspace/dist/apps/backend/package.json ./
+RUN npm install --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
+
+# Copiar schema y generar Prisma client
 COPY --from=build /workspace/apps/backend/prisma ./prisma
+RUN npx prisma generate --schema=./prisma/schema.prisma \
+  && ls -la node_modules/.prisma/client/
 
-RUN npm install --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund \
-  && npx prisma generate \
-  && npm cache clean --force \
-  && rm -rf /root/.npm /tmp/*
-
+# Copiar los archivos de la app
 COPY --from=build /workspace/dist/apps/backend ./
+
+RUN npm cache clean --force \
+  && rm -rf /root/.npm /tmp/*
 
 USER node
 EXPOSE 3000
