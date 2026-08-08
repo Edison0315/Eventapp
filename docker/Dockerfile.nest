@@ -23,7 +23,10 @@ WORKDIR /app
 
 # Copy built artifact (nx emits a package.json with only runtime deps for the backend)
 COPY --from=build /workspace/dist/apps/backend ./
-# Install only the backend's runtime deps, not the full monorepo deps
+# Copy Prisma client generado en build
+COPY --from=build /workspace/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /workspace/node_modules/@prisma ./node_modules/@prisma
+
 RUN npm install --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund \
   && npm cache clean --force \
   && rm -rf /root/.npm /tmp/*

@@ -1,142 +1,140 @@
-name: CI/CD to EC2
+# name: CI/CD to EC2
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [main]
+#   workflow_dispatch:
 
-env:
-  AWS_REGION: eu-north-1
-  ECR_REPO_API: api
-  ECR_REPO_FRONTEND: frontend
+# env:
+#   AWS_REGION: eu-north-1
+#   ECR_REPO_API: api
+#   ECR_REPO_FRONTEND: frontend
 
-jobs:
-  # ---------------------------------------------------------------------------
-  # 1. Build & push only the apps that actually changed (Nx affected)
-  # ---------------------------------------------------------------------------
-  build:
-    name: Build & push (${{ matrix.target }})
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: backend
-            dockerfile: docker/Dockerfile.nest
-            context: .
-          - target: frontend
-            dockerfile: docker/Dockerfile.angular
-            context: .
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # Nx necesita el historial para affected
+# jobs:
+#   # ---------------------------------------------------------------------------
+#   # 1. Build & push only the apps that actually changed (Nx affected)
+#   # ---------------------------------------------------------------------------
+#   build:
+#     name: Build & push (${{ matrix.target }})
+#     runs-on: ubuntu-latest
+#     permissions:
+#       id-token: write
+#       contents: read
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         include:
+#           - target: backend
+#             dockerfile: docker/Dockerfile.nest
+#             context: .
+#           - target: frontend
+#             dockerfile: docker/Dockerfile.angular
+#             context: .
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0   # Nx necesita el historial para affected
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+#       - name: Setup Node
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 22
+#           cache: npm
 
-      - name: Install deps
-        run: npm ci --ignore-scripts
+#       - name: Install deps
+#         run: npm ci --ignore-scripts
 
-      - name: Detect changed apps
-        id: affected
-        run: |
-          CHANGED=$(npx nx show projects --affected --base=origin/${{ github.base_ref || 'main' }} --head=HEAD 2>/dev/null || echo "")
-          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
-          echo "::group::Changed projects"
-          echo "$CHANGED"
-          echo "::endgroup::"
+#       - name: Detect changed apps
+#         id: affected
+#         run: |
+#           CHANGED=$(npx nx show projects --affected --base=origin/${{ github.base_ref || 'main' }} --head=HEAD 2>/dev/null || echo "")
+#           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
+#           echo "::group::Changed projects"
+#           echo "$CHANGED"
+#           echo "::endgroup::"
 
-      - name: Skip if not affected
-        if: ${{ !contains(steps.affected.outputs.changed, matrix.target) && github.event_name == 'push' }}
-        run: |
-          echo "::notice::${{ matrix.target }} no cambió en este push, saltando build."
-          exit 0
+#       - name: Skip if not affected
+#         if: ${{ !contains(steps.affected.outputs.changed, matrix.target) && github.event_name == 'push' }}
+#         run: |
+#           echo "::notice::${{ matrix.target }} no cambió en este push, saltando build."
+#           exit 0
 
-      - name: Skip if not affected
-        if: ${{ !contains(steps.affected.outputs.changed, matrix.target) && github.event_name == 'push' }}
-        run: |
-          echo "::notice::${{ matrix.target }} no cambió, saltando build."
-          exit 0
+#       - name: Skip if not affected
+#         if: ${{ !contains(steps.affected.outputs.changed, matrix.target) && github.event_name == 'push' }}
+#         run: |
+#           echo "::notice::${{ matrix.target }} no cambió, saltando build."
+#           exit 0
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+#           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to ECR
-        id: ecr
-        uses: aws-actions/amazon-ecr-login@v2
+#       - name: Login to ECR
+#         id: ecr
+#         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build & push image
-        env:
-          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build \
-            -f ${{ matrix.dockerfile }} \
-            -t $ECR_REGISTRY/${{ matrix.target }}:${{ env.IMAGE_TAG }} \
-            -t $ECR_REGISTRY/${{ matrix.target }}:latest \
-            ${{ matrix.context }}
-          docker push $ECR_REGISTRY/${{ matrix.target }}:${{ env.IMAGE_TAG }}
-          docker push $ECR_REGISTRY/${{ matrix.target }}:latest
+#       - name: Build & push image
+#         env:
+#           ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+#           IMAGE_TAG: ${{ github.sha }}
+#         run: |
+#           docker build \
+#             -f ${{ matrix.dockerfile }} \
+#             -t $ECR_REGISTRY/${{ matrix.target }}:${{ env.IMAGE_TAG }} \
+#             -t $ECR_REGISTRY/${{ matrix.target }}:latest \
+#             ${{ matrix.context }}
+#           docker push $ECR_REGISTRY/${{ matrix.target }}:${{ env.IMAGE_TAG }}
+#           docker push $ECR_REGISTRY/${{ matrix.target }}:latest
 
-  # ---------------------------------------------------------------------------
-  # 2. Deploy on EC2 (se ejecuta solo si el build pasó)
-  # ---------------------------------------------------------------------------
-  deploy:
-    name: Deploy on EC2
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    permissions:
-      id-token: write
-      contents: read
-    env:
-      IMAGE_TAG: ${{ github.sha }}
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+#   # ---------------------------------------------------------------------------
+#   # 2. Deploy on EC2 (se ejecuta solo si el build pasó)
+#   # ---------------------------------------------------------------------------
+#   deploy:
+#     name: Deploy on EC2
+#     needs: build
+#     runs-on: ubuntu-latest
+#     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+#     permissions:
+#       id-token: write
+#       contents: read
+#     env:
+#       IMAGE_TAG: ${{ github.sha }}
+#     steps:
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+#           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Check if instance is registered with SSM
-        run: |
-          aws ssm describe-instance-information \
-            --filters "Key=InstanceIds,Values=${{ secrets.EC2_INSTANCE_ID }}" \
-            --region eu-north-1 \
-            --output json \
-            || echo "Instance not registered with SSM"
+#       - name: Check if instance is registered with SSM
+#         run: |
+#           aws ssm describe-instance-information \
+#             --filters "Key=InstanceIds,Values=${{ secrets.EC2_INSTANCE_ID }}" \
+#             --region eu-north-1 \
+#             --output json \
+#             || echo "Instance not registered with SSM"
 
-      - name: Send deploy command via SSM
-        run: |
-          aws ssm send-command \
-            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
-            --document-name "AWS-RunShellScript" \
-            --parameters commands=["bash /opt/app/deploy.sh"] \
-            --output-s3-bucket-name "${{ secrets.SSM_LOGS_BUCKET }}" \
-            --comment "Deploy ${{ env.IMAGE_TAG }}"
+#       - name: Send deploy command via SSM
+#         run: |
+#           aws ssm send-command \
+#             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+#             --document-name "AWS-RunShellScript" \
+#             --parameters commands=["bash /opt/app/deploy.sh"] \
+#             --output-s3-bucket-name "${{ secrets.SSM_LOGS_BUCKET }}" \
+#             --comment "Deploy ${{ env.IMAGE_TAG }}"
 
-      - name: Wait & verify
-        run: |
-          echo "Esperando a que la EC2 termine el deploy..."
-          for i in {1..30}; do
-            STATUS=$(aws ssm list-commands \
-              --filters "key=status,value=Success" \
-              --query "Commands[0].Status" --output text 2>/dev/null || echo "Pending")
-            if [ "$STATUS" = "Success" ]; then
-              echo "Deploy OK"; exit 0
-            fi
-            sleep 5
-          done
-          echo "Deploy no completó a tiempo"; exit 1
-
-# Probando que funciona el CI/CD
+#       - name: Wait & verify
+#         run: |
+#           echo "Esperando a que la EC2 termine el deploy..."
+#           for i in {1..30}; do
+#             STATUS=$(aws ssm list-commands \
+#               --filters "key=status,value=Success" \
+#               --query "Commands[0].Status" --output text 2>/dev/null || echo "Pending")
+#             if [ "$STATUS" = "Success" ]; then
+#               echo "Deploy OK"; exit 0
+#             fi
+#             sleep 5
+#           done
+#           echo "Deploy no completó a tiempo"; exit 1
