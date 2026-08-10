@@ -11,9 +11,6 @@ env:
   ECR_REPO_FRONTEND: frontend
 
 jobs:
-  deploy:
-    timeout-minutes: 30
-    needs: build
   # ---------------------------------------------------------------------------
   # 1. Build & push only the apps that actually changed (Nx affected)
   # ---------------------------------------------------------------------------
@@ -96,6 +93,7 @@ jobs:
   # ---------------------------------------------------------------------------
   deploy:
     name: Deploy on EC2
+    timeout-minutes: 30
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
