@@ -11,6 +11,9 @@ env:
   ECR_REPO_FRONTEND: frontend
 
 jobs:
+  deploy:
+    timeout-minutes: 30
+    needs: build
   # ---------------------------------------------------------------------------
   # 1. Build & push only the apps that actually changed (Nx affected)
   # ---------------------------------------------------------------------------
@@ -123,6 +126,7 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --parameters commands=["bash /opt/app/deploy.sh"] \
             --output-s3-bucket-name "${{ secrets.SSM_LOGS_BUCKET }}" \
+            --timeout-seconds 900 \
             --comment "Deploy ${{ env.IMAGE_TAG }}"
 
       - name: Wait & verify
