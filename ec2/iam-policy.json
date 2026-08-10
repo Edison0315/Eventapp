@@ -2,6 +2,23 @@
 	"Version": "2012-10-17",
 	"Statement": [
 		{
+			"Sid": "SSMMessagesChannel",
+			"Effect": "Allow",
+			"Action": [
+				"ssmmessages:CreateControlChannel",
+				"ssmmessages:CreateDataChannel",
+				"ssmmessages:OpenControlChannel",
+				"ssmmessages:OpenDataChannel",
+				"ec2messages:GetMessages",
+				"ec2messages:GetEndpoint",
+				"ec2messages:SendReply",
+				"ec2messages:FailMessage",
+				"ec2messages:DeleteMessage",
+				"ec2messages:AcknowledgeMessage"
+			],
+			"Resource": "*"
+		},
+		{
 			"Sid": "ECRPushPull",
 			"Effect": "Allow",
 			"Action": [
