@@ -35,4 +35,4 @@ echo "[deploy] Container status:"
 docker compose ps
 echo "[deploy] Pruning old images..."
 docker image prune -f
-echo "[deploy] Done!  "
+echo "[deploy] Done!"
