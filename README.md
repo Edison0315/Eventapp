@@ -42,7 +42,7 @@ El objetivo es demostrar dominio del ciclo completo de desarrollo moderno: desde
                              ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                    GitHub Actions CI/CD                      │
-│   Lint → Test → Build → Docker → Push ECR → Deploy AWS       │
+│   Build → Docker → Push ECR → Deploy AWS                     │
 └────────────────────────────┬─────────────────────────────────┘
                              │  OIDC / IAM Role
                              ▼
