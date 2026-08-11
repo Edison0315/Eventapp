@@ -141,8 +141,7 @@ El objetivo es demostrar dominio del ciclo completo de desarrollo moderno: desde
 ## 🔄 Flujo de CI/CD
 
 1. **Push / PR** → dispara el workflow en GitHub Actions.
-2. **Lint & Test** → validación de calidad del código.
-3. **Build** → compilación incremental gracias a Nx.
+2. **Build** → compilación incremental gracias a Nx.
 4. **Docker Build** → imágenes multi-stage para cada aplicación.
 5. **Push a ECR** → autenticación vía OIDC + IAM Role.
 6. **Deploy en AWS** → despliegue del contenedor con secretos inyectados desde Secrets Manager.
